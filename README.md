@@ -16,7 +16,7 @@ Custom error messages can be passed in with `data-error="custom error message te
 
 1) Download the file [validation.js](https://github.com/abbott567/validation-for-prototypes/blob/master/validation.js) and put it into the directory `app/assets/javascripts`. 
 
-2) In your `head.html` file, which is located in the `app/views/includes` directory, paste the following code at the end:
+2) In your `scripts.html` file, which is located in the `app/views/includes` directory, paste the following code at the end:
 
 ``` javascript
   <script src="/public/javascripts/validation.js"></script>
