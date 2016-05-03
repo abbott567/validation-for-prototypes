@@ -126,4 +126,32 @@ Once you have installed the kit, you just need to add the `data-required` target
 </div>
 ```
 
+##### Date of Birth
+
+``` html
+<div class="form-group">
+    <legend class="form-label-bold">Date of birth</legend>
+
+    <fieldset data-required data-error="Cannot be blank">
+      <div class="form-date">
+        <p class="form-hint" id="dob-hint">For example, 31 3 1980</p>
+
+        <div class="form-group form-group-day">
+          <label for="dob-day">Day</label>
+          <input class="form-control" id="dob-day" name="dob-day" type="text" pattern="[0-9]*" min="0" max="31" aria-describedby="dob-hint">
+        </div>
+
+        <div class="form-group form-group-month">
+          <label for="dob-month">Month</label>
+             <input class="form-control" id="dob-month" name="dob-month" type="text" pattern="[0-9]*" min="0" max="12">
+          </div>
+
+        <div class="form-group form-group-year">
+          <label for="dob-year">Year</label>
+          <input class="form-control" id="dob-year" name="dob-year" type="text" pattern="[0-9]*" min="0" max="2016">
+        </div>
+      </div>
+    </fieldset>
+  </div>
+```
 
