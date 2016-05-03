@@ -40,7 +40,7 @@ Custom error messages can be passed in with `data-error="custom error message te
 </div>
 ```
 
-### Synax / Markup
+### Syntax / Markup
 
 Once you have installed the kit, you just need to add the `data-required` target to any fieldset you want validating. See below for examples of each input type. 
 
