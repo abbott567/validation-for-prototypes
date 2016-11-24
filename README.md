@@ -1,10 +1,10 @@
 # Validation plugin for GOVUK Prototypes
 
-This plugin will allow you to add simple validation to your prototype project. You can set any text inputs, radio buttons or checkboxes to require they be filled in.
+This plugin will allow you to add simple validation to your GOVUK prototype. You can check text inputs and textareas are not blank, and make sure at least one option is selected on radios and checkboxes.
 
 **WARNING: For prototypes only. Do not use in production under any circumstances**
 
-![Validation](https://raw.githubusercontent.com/abbott567/validation-for-prototypes/screenshots/screenshots/validation.gif?raw=true "Validation")
+![Demonstration of validation](https://raw.githubusercontent.com/abbott567/validation-for-prototypes/images/images/validation.gif "Validation Demonstration")
 
 ### How does it work?
 
@@ -21,107 +21,38 @@ Custom error messages can be passed in with `data-error="custom error message te
 ``` javascript
   <script src="/public/javascripts/validation.js"></script>
 ```
+That's it! Happy validating.
 
-3) Add the following error-summary HTML to the top of the page you want validating.  
-*Nunjucks tip: you could put this in it's own file in `app/views/includes` and use {% include 'includes/error.html' %}*
+### Markup examples
+
+In order to make the validation work, your HTML markup must be correct. Below are examples of each input type.
+
+##### Textarea
 
 ``` html
-<div class="error-summary" role="group" style="display:none;">
-  <h1 class="heading-medium error-summary-heading" id="error-summary-heading">
-    There's been a problem
-  </h1>
+<div class="form-group">
+  <fieldset data-required data-error="Cannot be blank">
+    <legend class="heading-medium">Do you have difficulty completing daily activities</legend>
 
-  <p>
-    Check the following:
-  </p>
+    <label class="form-label" for="circumstances">
+      Tell us about your circumstances
+    </label>
 
-  <ul class="error-summary-list">
-  </ul>
+    <textarea id="circumstances" rows="5" cols="30" class="form-control" name="circumstances"></textarea>
+  </fieldset>
 </div>
 ```
-
-### Syntax / Markup
-
-Once you have installed the kit, you just need to add the `data-required` target to any fieldset you want validating. See below for examples of each input type. 
-
 
 ##### Text input
 
 ``` html
 <div class="form-group">
   <fieldset data-required data-error="Cannot be blank">
-    <label class="form-label" for="first-name">
-      First name
-      <span class="form-hint">Form hint</span>
+    <label class="form-label-bold" for="full-name">
+      Full name
+      <span class="form-hint">As shown on your birth certificate or passport</span>
     </label>
-    
-    <input class="form-control" id="first-name" name="first-name" type="text">
-  </fieldset>
-</div>
-```
-
-##### Text area
-
-``` html
-<div class="form-group">
-  <fieldset data-required data-error="Cannot be blank">
-    <label class="form-label" for="textarea">
-      Text area
-      <span class="form-hint">Form hint.</span>
-    </label>
-
-    <textarea rows="5" cols="30" class="form-control" id="textarea" name="textarea"></textarea>
-  </fieldset>
-</div>
-```
-
-##### Radio Buttons
-
-``` html
-<h2 class="heading-medium">Do you already have a personal user account?</h2>
-<div class="form-group">
-  <fieldset class="inline" data-required data-error="Choose yes or no">
-    <legend class="visuallyhidden">Do you already have a personal user account?</legend>
-
-    <div class="form-group">
-      <label class="block-label" for="radio-inline-1">
-        <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
-        Yes
-      </label>
-
-      <label class="block-label" for="radio-inline-2">
-        <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No">
-        No
-      </label>
-    </div>
-  </fieldset>
-</div>
-```
-
-##### Checkboxes
-
-``` html
-<h2 class="heading-medium">Which types of waste do you transport regularly?</h2>
-<div class="form-group">
-  <fieldset data-required data-error="Choose at least one option">
-    <legend class="visuallyhidden">Which types of waste do you transport regularly?</legend>
-
-    <div class="form-group">
-      <label class="block-label" for="waste-type-1">
-        <input id="waste-type-1" name="waste-types" type="checkbox" value="waste-animal">
-        Waste from animal carcasses
-      </label>
-
-      <label class="block-label" for="waste-type-2">
-        <input id="waste-type-2" name="waste-types" type="checkbox" value="waste-mines">
-        Waste from mines or quarries
-      </label>
-
-      <label class="block-label" for="waste-type-3">
-        <input id="waste-type-3" name="waste-types" type="checkbox" value="waste-farm-agricultural">
-        Farm or agricultural waste
-      </label>
-    </div>
+    <input id="full-name" class="form-control" name="full-name" type="text">
   </fieldset>
 </div>
 ```
@@ -130,28 +61,72 @@ Once you have installed the kit, you just need to add the `data-required` target
 
 ``` html
 <div class="form-group">
+  <fieldset data-required data-error="Cannot be blank">
     <legend class="form-label-bold">Date of birth</legend>
+    <p class="form-hint" id="dob-hint">For example, 31 3 1980</p>
 
-    <fieldset data-required data-error="Cannot be blank">
-      <div class="form-date">
-        <p class="form-hint" id="dob-hint">For example, 31 3 1980</p>
-
-        <div class="form-group form-group-day">
-          <label for="dob-day">Day</label>
-          <input class="form-control" id="dob-day" name="dob-day" type="text" pattern="[0-9]*" min="0" max="31" aria-describedby="dob-hint">
-        </div>
-
-        <div class="form-group form-group-month">
-          <label for="dob-month">Month</label>
-             <input class="form-control" id="dob-month" name="dob-month" type="text" pattern="[0-9]*" min="0" max="12">
-          </div>
-
-        <div class="form-group form-group-year">
-          <label for="dob-year">Year</label>
-          <input class="form-control" id="dob-year" name="dob-year" type="text" pattern="[0-9]*" min="0" max="2016">
-        </div>
+    <div class="form-date">
+      <div class="form-group form-group-day">
+        <label for="dob-day">Day</label>
+        <input class="form-control" id="dob-day" name="dob-day" type="text" pattern="[0-9]*" min="0" max="31" aria-describedby="dob-hint">
       </div>
-    </fieldset>
-  </div>
+
+      <div class="form-group form-group-month">
+        <label for="dob-month">Month</label>
+        <input class="form-control" id="dob-month" name="dob-month" type="text" pattern="[0-9]*" min="0" max="12">
+      </div>
+
+      <div class="form-group form-group-year">
+        <label for="dob-year">Year</label>
+        <input class="form-control" id="dob-year" name="dob-year" type="text" pattern="[0-9]*" min="0" max="2016">
+      </div>
+    </div>
+  </fieldset>
+</div>
+```
+
+##### Radio Buttons
+
+``` html
+<div class="form-group">
+  <fieldset class="inline" data-required data-error="Choose yes or no">
+    <legend class="heading-medium">Do have a personal user account?</legend>
+
+    <label class="block-label" for="radio-inline-1">
+      <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
+      Yes
+    </label>
+
+    <label class="block-label" for="radio-inline-2">
+      <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No">
+      No
+    </label>
+  </fieldset>
+</div>
+```
+
+##### Checkboxes
+
+``` html
+<div class="form-group">
+  <fieldset data-required data-error="Choose at least one option">
+    <legend class="heading-medium">Which documents do you have?</legend>
+
+    <label class="block-label" for="passport">
+      <input id="passport" name="doc-types" type="checkbox" value="passport">
+      Passport
+    </label>
+
+    <label class="block-label" for="driving-licence">
+      <input id="driving-licence" name="doc-types" type="checkbox" value="driving-licence">
+      Driving licence
+    </label>
+
+    <label class="block-label" for="birth-certificate">
+      <input id="birth-certificate" name="doc-types" type="checkbox" value="birth-certificate">
+      Birth certificate
+    </label>
+  </fieldset>
+</div>
 ```
 
