@@ -1,222 +1,144 @@
-$('form').on('submit', function (e) {
-  validate(e);
-});
+// Config
+var defaultErrorHeading = 'There\'s been a problem';
+var defaultErrorDescription = 'Check the following';
+var defaultErrorMessage = 'There is an error';
 
-function validate(e) {
-  var valid = [];
-  var invalid = [];
-  var num = 1;
+function clearValidation() {
+  $('.error-summary').remove();
 
-  // Check all data-required tags
-  $('[data-required]').each(function () {
-    var textInputs = $(this).find('input[type="text"]');
-    var radioInputs = $(this).find('input[type="radio"]');
-    var checkboxInputs = $(this).find('input[type="checkbox"]');
-    var textAreas = $(this).find('textarea');
-
-    var selected = false;
-    var id;
-    var formGroup;
-    var text;
-    var errorMessage;
-
-    // Checkboxes
-    if (checkboxInputs.length > 0) {
-      formGroup = $(this).find('.form-group');
-      id = $(this).find('input').attr('id');
-      selected = false;
-
-      $(checkboxInputs).each(function () {
-        if ($(this).parent().hasClass('selected')) {
-          selected = true;
-          return;
-        }
-      });
-
-      if (selected === false) {
-        invalid.push($(this).find('input').attr('name'));
-        text = $(this).parents('.form-group').prev('h2').text();
-        errorMessage = $(this).attr('data-error');
-
-        if (errorMessage === undefined) {
-          errorMessage = 'choose an option';
-        }
-
-        if ($(this).find('.error-message').length === 0) {
-          formGroup.addClass('error');
-          formGroup.prepend(
-            String(
-              '<span id="error-message-' + num + '" class="error-message">' + errorMessage + '</span>'
-            )
-          );
-
-          $('.error-summary-list:first').append(
-            String(
-              '<li><a href="#' + id + '">- ' + text + ' - ' + errorMessage.toLowerCase() + '</a></li>'
-            )
-          );
-        }
-      } else {
-        formGroup.removeClass('error');
-        formGroup.find('.error-message').remove();
-        $('.error-summary-list').find('a[href="#' + id + '"]').remove();
-      }
-
-      num++;
-    }
-
-    // Radios
-    if (radioInputs.length > 0) {
-      formGroup = $(this).find('.form-group');
-      id = $(this).find('input').attr('id');
-      selected = false;
-
-      $(radioInputs).each(function () {
-        if ($(this).parent().hasClass('selected')) {
-          selected = true;
-          return;
-        }
-      });
-
-      if (selected === false) {
-        invalid.push($(this).find('input').attr('name'));
-        text = $(this).parents('.form-group').prev('h2').text();
-
-        errorMessage = $(this).attr('data-error');
-
-        if (errorMessage === undefined) {
-          errorMessage = 'choose an option';
-        }
-
-        if ($(this).find('.error-message').length === 0) {
-          formGroup.addClass('error');
-          formGroup.prepend(
-            String(
-              '<span id="error-message-' + num + '" class="error-message">' + errorMessage + '</span>'
-            )
-          );
-
-          $('.error-summary-list:first').append(
-            String(
-              '<li><a href="#' + id + '">- ' + text + ' - ' + errorMessage.toLowerCase() + '</a></li>'
-            )
-          );
-        }
-      } else {
-        formGroup.removeClass('error');
-        formGroup.find('.error-message').remove();
-        $('.error-summary-list').find('a[href="#' + id + '"]').remove();
-      }
-
-      num++;
-    }
-
-    // Text inputs
-    if (textInputs.length > 0) {
-      $(textInputs).each(function () {
-        var id = $(this).attr('id');
-        var formGroup = $(this).parents('.form-group');
-        var label = $('label[for="' + $(this).attr('id') + '"]');
-        var errorMessage = $(this).parents('fieldset').attr('data-error');
-
-        if ($(this).val().length === 0) {
-          invalid.push($(this).attr('id'));
-          // Get the text from the label and remove any hint text
-          var text = $(this).parents('.form-group').find('label').html();
-          text = text.replace(/(<span class=")(.*)(">)(.*)(<\/span>)/, '');
-
-          // If there is no error message set, then make a default one
-          if (errorMessage === undefined) {
-            errorMessage = 'There is an error';
-          }
-
-          // Find the formgroup for this input and add the error class
-          formGroup.addClass('error');
-          label.css('font-weight', 'bold');
-
-          // If the error message is not already showing, add it to the page
-          if ($(this).parents('.form-group').find('.error-message').length === 0) {
-            label.after(
-              String(
-                '<span id="error-message-' + num + '" class="error-message">' + errorMessage + '</span>'
-              )
-            );
-
-            // Add the error to the summary list at the top of the page
-            $('.error-summary-list:first').append(
-              String(
-                '<li><a href="#' + id + '">- ' + text + ' - ' + errorMessage.toLowerCase() + '</a></li>'
-              )
-            );
-
-            num++;
-          }
-        } else {
-          valid.push($(this).attr('id'));
-          $(this).parents('.form-group').removeClass('error');
-          $(this).parents('.form-group').find('.error-message').remove();
-          $('.error-summary-list').find('a[href="#' + id + '"]').remove();
-        }
-      });
-    }
-
-    // Textareas
-    if (textAreas.length > 0) {
-      $(textAreas).each(function () {
-        var id = $(this).attr('id');
-        var formGroup = $(this).parents('.form-group');
-        var label = $('label[for="' + $(this).attr('id') + '"]');
-        var errorMessage = $(this).parents('fieldset').attr('data-error');
-
-        if ($(this).val().length === 0) {
-          invalid.push($(this).attr('id'));
-          // Get the text from the label and remove any hint text
-          var text = $(this).parents('.form-group').find('label').html();
-          text = text.replace(/(<span class=")(.*)(">)(.*)(<\/span>)/, '');
-
-          // If there is no error message set, then make a default one
-          if (errorMessage === undefined) {
-            errorMessage = 'There is an error';
-          }
-
-          // Find the formgroup for this input and add the error class
-          formGroup.addClass('error');
-          label.css('font-weight', 'bold');
-
-          // If the error message is not already showing, add it to the page
-          if ($(this).parents('.form-group').find('.error-message').length === 0) {
-            label.after(
-              String(
-                '<span id="error-message-' + num + '" class="error-message">' + errorMessage + '</span>'
-              )
-            );
-
-            // Add the error to the summary list at the top of the page
-            $('.error-summary-list:first').append(
-              String(
-                '<li><a href="#' + id + '">- ' + text + ' - ' + errorMessage.toLowerCase() + '</a></li>'
-              )
-            );
-
-            num++;
-          }
-        } else {
-          valid.push($(this).attr('id'));
-          $(this).parents('.form-group').removeClass('error');
-          $(this).parents('.form-group').find('.error-message').remove();
-          $('.error-summary-list').find('a[href="#' + id + '"]').remove();
-        }
-      });
-    }
+  $('.error').each(function () {
+    $(this).removeClass('error');
   });
 
-  // If there is more than one invalid field
-  if (invalid.length > 0) {
-    // Stop the form from submitting
-    e.preventDefault();
-    // Show the error summary
-    $('.error-summary:first').show();
-    // Scroll to the top of the page
-    $('body').scrollTop(0);
+  $('.error-message').each(function () {
+    $(this).remove();
+  });
+}
+
+function checkTextFields(errors) {
+  $(document).find('input[type="text"], textarea').each(function () {
+    var $fieldset = $(this).parents('fieldset');
+    var label = $(this).parent().find('label').clone().children().remove().end().text();
+
+    if ($fieldset.attr('data-required') !== undefined && $(this).val() === '' && !$(this).parent().hasClass('js-hidden')) {
+      if ($(this).attr('id') === undefined) {
+        $(this).attr('id', $(this).attr('name'));
+      }
+
+      errors.push(
+        {
+          id: $(this).attr('id'),
+          name: $(this).attr('name'),
+          errorMessage: $fieldset.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
+          label: label,
+          type: 'text'
+        }
+      );
+    }
+  });
+  return;
+}
+
+function checkSelectors(errors) {
+  var checked = [];
+
+  $(document).find('input[type="radio"], input[type="checkbox"]').each(function () {
+    var $fieldset = $(this).parents('fieldset');
+    var label = $fieldset.find('legend').clone().children().remove().end().text();
+
+    if ($fieldset.attr('data-required') !== undefined && $fieldset.find(':checked').length === 0) {
+      if ($(this).attr('id') === undefined) {
+        $(this).attr('id', $(this).attr('name'));
+      }
+
+      if (checked.indexOf($(this).attr('name')) < 0) {
+        checked.push($(this).attr('name'));
+        errors.push(
+          {
+            id: $(this).attr('id'),
+            name: $(this).attr('name'),
+            errorMessage: $fieldset.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
+            label: label,
+            type: 'text'
+          }
+        );
+      }
+    }
+  });
+}
+
+function appendErrorSummary() {
+  var summaryNotPresent = $(document).find('.error-summary').length === 0;
+
+  if (summaryNotPresent) {
+    $('main').prepend(
+      '<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">' +
+        '<h1 class="heading-medium error-summary-heading" id="error-summary-heading">' +
+          defaultErrorHeading +
+        '</h1>' +
+        '<p>' +
+          defaultErrorDescription +
+        '</p>' +
+        '<ul class="error-summary-list">' +
+        '</ul>' +
+      '</div>'
+    );
   }
 }
+
+function appendErrorMessages(errors) {
+  for (var i = 0; i < errors.length; i++) {
+    if ($(document).find('a[href="#' + errors[i].id + '"]').length === 0) {
+      $('.error-summary-list').append(
+        '<li><a href="#' + errors[i].id + '">' + errors[i].label + ' - ' + errors[i].errorMessage + '</a></li>'
+      );
+      var $fieldset = $(document).find('#' + errors[i].id).parents('fieldset');
+      $fieldset.addClass('error');
+
+      if ($fieldset.find('.error-message').length === 0) {
+        if ($fieldset.find('input[type="text"]').length > 0 || $fieldset.find('textarea').length > 0) {
+          if ($fieldset.find('.form-date').length > 0) {
+            $fieldset.find('.form-date').before(
+              '<span class="error-message">' +
+                errors[i].errorMessage +
+              '</span>'
+            );
+          } else {
+            $fieldset.find('label').append(
+              '<span class="error-message">' +
+                errors[i].errorMessage +
+              '</span>'
+            );
+          }
+        } else if ($fieldset.find('input[type="radio"]').length > 0 || $fieldset.find('input[type="checkbox"]')) {
+          $fieldset.find('legend').append(
+            '<span class="error-message">' +
+              errors[i].errorMessage +
+            '</span>'
+          );
+        }
+      }
+    }
+  }
+}
+
+$(document).on('submit', 'form', function (e) {
+  var requiredFieldsPresent = $(document).find('[data-required]').length > 0;
+
+  clearValidation();
+
+  if (requiredFieldsPresent) {
+    var errors = [];
+
+    checkTextFields(errors);
+    checkSelectors(errors);
+
+    if (errors.length > 0) {
+      e.preventDefault();
+      appendErrorSummary();
+      appendErrorMessages(errors);
+      $(document).scrollTop(0);
+    }
+
+  }
+});
