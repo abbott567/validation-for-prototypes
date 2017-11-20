@@ -13,6 +13,10 @@ function clearValidation() {
   $('.error-message').each(function () {
     $(this).remove();
   });
+
+  $('.form-group-error').each(function(){
+    $(this).removeClass('form-group-error');
+  })
 }
 
 function checkTextFields(errors) {
@@ -94,6 +98,7 @@ function appendErrorMessages(errors) {
       );
       var $fieldset = $(document).find('#' + errors[i].id).parents('fieldset');
       $fieldset.addClass('error');
+      $fieldset.closest('.form-group').addClass('form-group-error');
 
       if ($fieldset.find('.error-message').length === 0) {
         if ($fieldset.find('input[type="text"]').length > 0 || $fieldset.find('textarea').length > 0) {
