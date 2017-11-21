@@ -20,7 +20,7 @@ function clearValidation() {
 }
 
 function checkTextFields(errors) {
-  $(document).find('input[type="text"], textarea').each(function () {
+  $(document).find('input[type="text"],input[type="password"], textarea').each(function () {
     var $formgroup = $(this).parents('.form-group');
     var label = $(this).parent().find('label').clone().children().remove().end().text();
 
@@ -35,7 +35,7 @@ function checkTextFields(errors) {
           name: $(this).attr('name'),
           errorMessage: $formgroup.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
           label: label,
-          type: 'text'
+          type: 'text, password'
         }
       );
     }
@@ -63,7 +63,7 @@ function checkSelectors(errors) {
             name: $(this).attr('name'),
             errorMessage: $fieldset.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
             label: label,
-            type: 'text'
+            type: 'text, password'
           }
         );
       }
@@ -104,7 +104,7 @@ function appendErrorMessages(errors) {
       $formgroup.addClass('form-group-error');
 
       if ($formgroup.find('.error-message').length === 0) {
-        if ($formgroup.find('input[type="text"]').length > 0 || $formgroup.find('textarea').length > 0) {
+        if ($formgroup.find('input[type="text"], input[type="password"]').length > 0 || $formgroup.find('textarea').length > 0) {
           if ($formgroup.find('.form-date').length > 0) {
             $formgroup.find('.form-date').before(
               '<span class="error-message">' +
