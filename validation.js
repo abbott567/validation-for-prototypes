@@ -6,8 +6,8 @@ var defaultErrorMessage = 'There is an error';
 function clearValidation() {
   $('.error-summary').remove();
 
-  $('.error').each(function () {
-    $(this).removeClass('error');
+  $('.form-control-error').each(function () {
+    $(this).removeClass('form-control-error');
   });
 
   $('.error-message').each(function () {
@@ -117,6 +117,7 @@ function appendErrorMessages(errors) {
                 errors[i].errorMessage +
               '</span>'
             );
+            $formgroup.find('.form-control').addClass('form-control-error');
           }
         } else if ($formgroup.find('input[type="radio"]').length > 0 || $formgroup.find('input[type="checkbox"]')) {
           $formgroup.find('legend').append(
