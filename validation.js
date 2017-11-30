@@ -6,21 +6,25 @@ var defaultErrorMessage = 'There is an error';
 function clearValidation() {
   $('.error-summary').remove();
 
-  $('.error').each(function () {
-    $(this).removeClass('error');
+  $('.form-control-error').each(function () {
+    $(this).removeClass('form-control-error');
   });
 
   $('.error-message').each(function () {
     $(this).remove();
   });
+
+  $('.form-group-error').each(function(){
+    $(this).removeClass('form-group-error');
+  });
 }
 
 function checkTextFields(errors) {
-  $(document).find('input[type="text"], textarea').each(function () {
-    var $fieldset = $(this).parents('fieldset');
+  $(document).find('input[type="text"],input[type="password"], textarea').each(function () {
+    var $formgroup = $(this).parents('.form-group');
     var label = $(this).parent().find('label').clone().children().remove().end().text();
 
-    if ($fieldset.attr('data-required') !== undefined && $(this).val() === '' && !$(this).parent().hasClass('js-hidden')) {
+    if ($formgroup.attr('data-required') !== undefined && $(this).val() === '' && !$(this).parent().hasClass('js-hidden')) {
       if ($(this).attr('id') === undefined) {
         $(this).attr('id', $(this).attr('name'));
       }
@@ -29,9 +33,9 @@ function checkTextFields(errors) {
         {
           id: $(this).attr('id'),
           name: $(this).attr('name'),
-          errorMessage: $fieldset.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
+          errorMessage: $formgroup.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
           label: label,
-          type: 'text'
+          type: 'text, password'
         }
       );
     }
@@ -59,7 +63,7 @@ function checkSelectors(errors) {
             name: $(this).attr('name'),
             errorMessage: $fieldset.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
             label: label,
-            type: 'text'
+            type: 'text, password'
           }
         );
       }
@@ -69,21 +73,20 @@ function checkSelectors(errors) {
 
 function appendErrorSummary() {
   var summaryNotPresent = $(document).find('.error-summary').length === 0;
+  var summary = '<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">' +
+      '<h1 class="heading-medium error-summary-heading" id="error-summary-heading">' +
+        defaultErrorHeading +
+      '</h1>' +
+      '<p>' +
+        defaultErrorDescription +
+      '</p>' +
+      '<ul class="error-summary-list">' +
+      '</ul>' +
+    '</div>';
 
   if (summaryNotPresent) {
-    $('main').prepend(
-      '<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">' +
-        '<h1 class="heading-medium error-summary-heading" id="error-summary-heading">' +
-          defaultErrorHeading +
-        '</h1>' +
-        '<p>' +
-          defaultErrorDescription +
-        '</p>' +
-        '<ul class="error-summary-list">' +
-        '</ul>' +
-      '</div>'
-    );
-  }
+      $('form').before(summary);
+    }
 }
 
 function appendErrorMessages(errors) {
@@ -92,26 +95,27 @@ function appendErrorMessages(errors) {
       $('.error-summary-list').append(
         '<li><a href="#' + errors[i].id + '">' + errors[i].label + ' - ' + errors[i].errorMessage + '</a></li>'
       );
-      var $fieldset = $(document).find('#' + errors[i].id).parents('fieldset');
-      $fieldset.addClass('error');
+      var $formgroup = $(document).find('#' + errors[i].id).parents('.form-group');
+      $formgroup.addClass('form-group-error');
 
-      if ($fieldset.find('.error-message').length === 0) {
-        if ($fieldset.find('input[type="text"]').length > 0 || $fieldset.find('textarea').length > 0) {
-          if ($fieldset.find('.form-date').length > 0) {
-            $fieldset.find('.form-date').before(
+      if ($formgroup.find('.error-message').length === 0) {
+        if ($formgroup.find('input[type="text"], input[type="password"]').length > 0 || $formgroup.find('textarea').length > 0) {
+          if ($formgroup.find('.form-date').length > 0) {
+            $formgroup.find('.form-date').before(
               '<span class="error-message">' +
                 errors[i].errorMessage +
               '</span>'
             );
           } else {
-            $fieldset.find('label').append(
+            $formgroup.find('label').append(
               '<span class="error-message">' +
                 errors[i].errorMessage +
               '</span>'
             );
+            $formgroup.find('.form-control').addClass('form-control-error');
           }
-        } else if ($fieldset.find('input[type="radio"]').length > 0 || $fieldset.find('input[type="checkbox"]')) {
-          $fieldset.find('legend').append(
+        } else if ($formgroup.find('input[type="radio"]').length > 0 || $formgroup.find('input[type="checkbox"]')) {
+          $formgroup.find('legend').append(
             '<span class="error-message">' +
               errors[i].errorMessage +
             '</span>'
