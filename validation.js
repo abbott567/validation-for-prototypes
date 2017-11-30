@@ -85,13 +85,8 @@ function appendErrorSummary() {
     '</div>';
 
   if (summaryNotPresent) {
-    if ($('.phase-banner').length){
-      $('.phase-banner').after(summary);
+      $('form').before(summary);
     }
-    else{
-      $('main').prepend(summary);
-    }
-  }
 }
 
 function appendErrorMessages(errors) {
