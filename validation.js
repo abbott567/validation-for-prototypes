@@ -20,8 +20,8 @@ function clearValidation() {
 }
 
 function checkTextFields(errors) {
-  $(document).find('input[type="text"],input[type="password"], textarea').each(function () {
-    var $formgroup = $(this).parents('.form-group');
+  $(document).find('input[type="text"], input[type="number"], input[type="password"], input[type="file"], textarea').each(function () {
+    var $formgroup = $(this).closest('.form-group');
     var label = $(this).parent().find('label').clone().children().remove().end().text();
 
     if ($formgroup.attr('data-required') !== undefined && $(this).val() === '' && !$(this).parent().hasClass('js-hidden')) {
@@ -40,7 +40,7 @@ function checkTextFields(errors) {
       );
     }
   });
-  return;
+  return false;
 }
 
 function checkSelectors(errors) {
@@ -97,6 +97,8 @@ function appendErrorMessages(errors) {
       );
       var $formgroup = $(document).find('#' + errors[i].id).parents('.form-group');
       $formgroup.addClass('form-group-error');
+      // dates have 2 parent form-groups so remove the error class from the inner one
+      $('.form-group-error .form-group-error').removeClass('form-group-error')
 
       if ($formgroup.find('.error-message').length === 0) {
         if ($formgroup.find('input[type="text"], input[type="password"]').length > 0 || $formgroup.find('textarea').length > 0) {
