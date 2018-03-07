@@ -11,7 +11,7 @@ There are a set of tests you can run against this code to check it is working as
 
 ### How does it work?
 
-The plugin uses jQuery to check any `<fieldset>` tags you have applied the data attribute of `data-required` to. It then checks you have made a selection or entered some characters. If the validation fails, the browser scrolls to the top of the page and shows the error message.
+The plugin uses jQuery to check any divs with the `.form-group` class you have applied the data attribute of `data-required` to. It then checks you have made a selection or entered some characters. If the validation fails, the browser scrolls to the top of the page and shows the error message.
 
 Custom error messages can be passed in with `data-error="custom error message text"`.
 
@@ -33,8 +33,7 @@ In order to make the validation work, your HTML markup must be correct. Below ar
 ##### Textarea
 
 ``` html
-<div class="form-group">
-  <fieldset data-required data-error="Cannot be blank">
+<div class="form-group" data-required data-error="Cannot be blank">
     <legend class="heading-medium">Do you have difficulty completing daily activities</legend>
 
     <label class="form-label" for="circumstances">
@@ -42,21 +41,18 @@ In order to make the validation work, your HTML markup must be correct. Below ar
     </label>
 
     <textarea id="circumstances" rows="5" cols="30" class="form-control" name="circumstances"></textarea>
-  </fieldset>
 </div>
 ```
 
 ##### Text input
 
 ``` html
-<div class="form-group">
-  <fieldset data-required data-error="Cannot be blank">
+<div class="form-group" data-required data-error="Cannot be blank">
     <label class="form-label-bold" for="full-name">
       Full name
       <span class="form-hint">As shown on your birth certificate or passport</span>
     </label>
     <input id="full-name" class="form-control" name="full-name" type="text">
-  </fieldset>
 </div>
 ```
 
@@ -64,71 +60,80 @@ In order to make the validation work, your HTML markup must be correct. Below ar
 
 ``` html
 <div class="form-group">
-  <fieldset data-required data-error="Cannot be blank">
     <legend class="form-label-bold">Date of birth</legend>
     <p class="form-hint" id="dob-hint">For example, 31 3 1980</p>
 
     <div class="form-date">
-      <div class="form-group form-group-day">
+      <div class="form-group form-group-day" data-required data-error="Cannot be blank">
         <label for="dob-day">Day</label>
         <input class="form-control" id="dob-day" name="dob-day" type="text" pattern="[0-9]*" min="0" max="31" aria-describedby="dob-hint">
       </div>
 
-      <div class="form-group form-group-month">
+      <div class="form-group form-group-month" data-required data-error="Cannot be blank">
         <label for="dob-month">Month</label>
         <input class="form-control" id="dob-month" name="dob-month" type="text" pattern="[0-9]*" min="0" max="12">
       </div>
 
-      <div class="form-group form-group-year">
+      <div class="form-group form-group-year" data-required data-error="Cannot be blank">
         <label for="dob-year">Year</label>
         <input class="form-control" id="dob-year" name="dob-year" type="text" pattern="[0-9]*" min="0" max="2016">
       </div>
     </div>
-  </fieldset>
 </div>
 ```
 
 ##### Radio Buttons
 
 ``` html
-<div class="form-group">
-  <fieldset class="inline" data-required data-error="Choose yes or no">
-    <legend class="heading-medium">Do have a personal user account?</legend>
+<div class="form-group" data-required data-error="Choose yes or no">
+    <fieldset>
 
-    <label class="block-label" for="radio-inline-1">
-      <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
-      Yes
-    </label>
+      <legend>
+        <h1 class="heading-medium">Where do you live?</h1>
+      </legend>
 
-    <label class="block-label" for="radio-inline-2">
-      <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No">
-      No
-    </label>
-  </fieldset>
+      <div class="multiple-choice">
+        <input id="radio-1" type="radio" name="radio-group" value="Northern Ireland">
+        <label for="radio-1">Northern Ireland</label>
+      </div>
+      <div class="multiple-choice">
+        <input id="radio-2" type="radio" name="radio-group" value="Isle of Man or the Channel Islands">
+        <label for="radio-2">Isle of Man or the Channel Islands</label>
+      </div>
+      <p class="form-block">or</p>
+      <div class="multiple-choice">
+        <input id="radio-3" type="radio" name="radio-group" value="I am a British citizen living abroad">
+        <label for="radio-3">I am a British citizen living abroad</label>
+      </div>
+
+    </fieldset>
 </div>
 ```
 
 ##### Checkboxes
 
 ``` html
-<div class="form-group">
-  <fieldset data-required data-error="Choose at least one option">
-    <legend class="heading-medium">Which documents do you have?</legend>
+<div class="form-group" data-required data-error="Choose at least one option">
+      <fieldset>
 
-    <label class="block-label" for="passport">
-      <input id="passport" name="doc-types" type="checkbox" value="passport">
-      Passport
-    </label>
+    <legend>
+      <h3 class="heading-medium">Which types of waste do you transport regularly?</h3>
+      <span class="body-text">Select all that apply</span>
+    </legend>
 
-    <label class="block-label" for="driving-licence">
-      <input id="driving-licence" name="doc-types" type="checkbox" value="driving-licence">
-      Driving licence
-    </label>
+    <div class="multiple-choice">
+      <input id="waste-type-1" name="waste-types" type="checkbox" value="waste-animal">
+      <label for="waste-type-1">Waste from animal carcasses</label>
+    </div>
+    <div class="multiple-choice">
+      <input id="waste-type-2" name="waste-types" type="checkbox" value="waste-mines">
+      <label for="waste-type-2">Waste from mines or quarries</label>
+    </div>
+    <div class="multiple-choice">
+      <input id="waste-type-3" name="waste-types" type="checkbox" value="waste-farm-agricultural">
+      <label for="waste-type-3">Farm or agricultural waste</label>
+    </div>
 
-    <label class="block-label" for="birth-certificate">
-      <input id="birth-certificate" name="doc-types" type="checkbox" value="birth-certificate">
-      Birth certificate
-    </label>
   </fieldset>
 </div>
 ```

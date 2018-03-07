@@ -1,148 +1,186 @@
-// Config
-var defaultErrorHeading = 'There\'s been a problem';
-var defaultErrorDescription = 'Check the following';
-var defaultErrorMessage = 'There is an error';
+var properties = require('../../../lib/check/get-property')
+module.exports = function(router) {
 
-function clearValidation() {
-  $('.error-summary').remove();
+  router.get('/check/', function (req, res) {
 
-  $('.form-control-error').each(function () {
-    $(this).removeClass('form-control-error');
-  });
-
-  $('.error-message').each(function () {
-    $(this).remove();
-  });
-
-  $('.form-group-error').each(function(){
-    $(this).removeClass('form-group-error');
-  });
-}
-
-function checkTextFields(errors) {
-  $(document).find('input[type="text"],input[type="password"], textarea').each(function () {
-    var $formgroup = $(this).parents('.form-group');
-    var label = $(this).parent().find('label').clone().children().remove().end().text();
-
-    if ($formgroup.attr('data-required') !== undefined && $(this).val() === '' && !$(this).parent().hasClass('js-hidden')) {
-      if ($(this).attr('id') === undefined) {
-        $(this).attr('id', $(this).attr('name'));
-      }
-
-      errors.push(
-        {
-          id: $(this).attr('id'),
-          name: $(this).attr('name'),
-          errorMessage: $formgroup.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
-          label: label,
-          type: 'text, password'
-        }
-      );
-    }
-  });
-  return;
-}
-
-function checkSelectors(errors) {
-  var checked = [];
-
-  $(document).find('input[type="radio"], input[type="checkbox"]').each(function () {
-    var $fieldset = $(this).parents('fieldset');
-    var label = $fieldset.find('legend').clone().children().remove().end().text();
-
-    if ($fieldset.attr('data-required') !== undefined && $fieldset.find(':checked').length === 0) {
-      if ($(this).attr('id') === undefined) {
-        $(this).attr('id', $(this).attr('name'));
-      }
-
-      if (checked.indexOf($(this).attr('name')) < 0) {
-        checked.push($(this).attr('name'));
-        errors.push(
+    
+    res.render('./check/index.html',{
+      'property': properties.load(req),
+      'h1': 'Tell us about a change to your property',
+      'form': {
+        'action':'/check-change-submit',
+        'name': 'check-change-submit',
+        'inputs':[
           {
-            id: $(this).attr('id'),
-            name: $(this).attr('name'),
-            errorMessage: $fieldset.attr('data-error').toLowerCase() || defaultErrorMessage.toLowerCase(),
-            label: label,
-            type: 'text, password'
+            'type': 'snippet',
+            'path': 'includes/check/_check-change-intro.html'
+          },
+
+
+
+          //Initial selection on check
+
+          {
+            'type': 'radio',
+            'groupName': 'checkchangetype',
+            'inline': false,
+            'label': 'I want to (pick the one that applies):',
+            'required': true,
+            'errorText': 'Please select an option.',
+            'radios':[
+              {
+                'id': 'internal',
+                'label': 'confirm or change the information held for this property (for example if you’ve added a floor or floor area measurements are incorrect)',
+                'value': 'internal'
+              },
+              {
+                'id': 'external',
+                'label': 'tell you something external to this property has affected its value (such as long-term disruptive roadworks or scaffolding outside it)',
+                'value': 'external'
+              },
+              {
+                'id': 'split',
+                'label': 'tell you this property needs to be split into more than one',
+                'value': 'split'
+              },
+
+              {
+                'id': 'merged',
+                'label': 'tell you this property needs to be merged with others (you’ll need to repeat this for each of the properties you want to merge)',
+                'value': 'merged'
+              },
+              {
+                'id': 'removed',
+                'label': 'tell you this property is not used for business or has been demolished',
+                'value': 'removed'
+              },
+
+              {
+                'id': 'courtdecision',
+                'label': 'tell you this property has been subject to a court decision (including Supreme Court, High Court, Lands Tribunal or Valuation Tribunal decisions)',
+                'value': 'courtdecision'
+              }
+            ]
           }
-        );
+        ],
+        'continueText': 'Continue',
+        'continueDisabled': false,
+        'backTo': '#'
       }
-    }
-  });
-}
+    })
+  }),
 
-function appendErrorSummary() {
-  var summaryNotPresent = $(document).find('.error-summary').length === 0;
-  var summary = '<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">' +
-      '<h1 class="heading-medium error-summary-heading" id="error-summary-heading">' +
-        defaultErrorHeading +
-      '</h1>' +
-      '<p>' +
-        defaultErrorDescription +
-      '</p>' +
-      '<ul class="error-summary-list">' +
-      '</ul>' +
-    '</div>';
 
-  if (summaryNotPresent) {
-      $('form').before(summary);
-    }
-}
 
-function appendErrorMessages(errors) {
-  for (var i = 0; i < errors.length; i++) {
-    if ($(document).find('a[href="#' + errors[i].id + '"]').length === 0) {
-      $('.error-summary-list').append(
-        '<li><a href="#' + errors[i].id + '">' + errors[i].label + ' - ' + errors[i].errorMessage + '</a></li>'
-      );
-      var $formgroup = $(document).find('#' + errors[i].id).parents('.form-group');
-      $formgroup.addClass('form-group-error');
 
-      if ($formgroup.find('.error-message').length === 0) {
-        if ($formgroup.find('input[type="text"], input[type="password"]').length > 0 || $formgroup.find('textarea').length > 0) {
-          if ($formgroup.find('.form-date').length > 0) {
-            $formgroup.find('.form-date').before(
-              '<span class="error-message">' +
-                errors[i].errorMessage +
-              '</span>'
-            );
-          } else {
-            $formgroup.find('label').append(
-              '<span class="error-message">' +
-                errors[i].errorMessage +
-              '</span>'
-            );
-            $formgroup.find('.form-control').addClass('form-control-error');
-          }
-        } else if ($formgroup.find('input[type="radio"]').length > 0 || $formgroup.find('input[type="checkbox"]')) {
-          $formgroup.find('legend').append(
-            '<span class="error-message">' +
-              errors[i].errorMessage +
-            '</span>'
-          );
+
+
+  router.get('/check-change-submit', function (req, res) {
+
+    var checkchangetype = req.query.checkchangetype
+    switch (checkchangetype) {
+    case 'internal':
+      res.redirect('/check/confirm-or-change');
+      break;
+    case 'external':
+        res.redirect('/check/external');
+      break;
+
+    case 'split':
+    res.redirect('/check/split');
+  break;
+  case 'merged':
+  res.redirect('/check/merged');
+  break;
+  case 'removed':
+  res.redirect('/check/removed');
+  break;
+  case 'courtdecision':
+  res.redirect('/check/courtdecision');
+  break;
+
+  }
+  }),
+
+  router.get('/check/confirm-or-change', function (req, res) {
+    res.render('./check/confirm-or-change',{
+      'property': properties.load(req)
+    })
+  }),
+
+  router.get('/check/basic-property-details', function (req, res) {
+    res.render('./check/basic-property-details',{
+      'property': properties.load(req)
+    })
+  }),
+
+
+  router.get('/check/property-features', function (req, res) {
+
+
+      var proposedChange = req.query
+      if (Object.keys(proposedChange)[0] != undefined){
+        for (var key in proposedChange) {
+          req.session.data.dashboardData.clientProperties.find(property => property.laRef == req.session.data.laRef).proposedChanges[key] = proposedChange[key]
         }
       }
+
+    res.render('./check/property-features/index.html',{
+      'property': properties.load(req),
+      'errors': req.query.errors
+    })
+  })
+
+  router.get('/check/floor-areas', function (req, res) {
+    res.render('./check/floor-areas.html',{
+      'property': properties.load(req)
+    })
+  })
+
+  router.get('/check/parking', function (req, res) {
+    res.render('./check/parking.html',{
+      'property': properties.load(req)
+    })
+  })
+
+
+  router.get('/check/supporting-documents', function (req, res) {
+    res.render('./check/supporting-documents.html',{
+        'property': properties.load(req),
+        'form': {
+        'action': '/check/supporting-documents-submit',
+        'method': 'post',
+        'inputs': [
+          {'type': 'html',
+          'html': '<div class="clearfix"></div><div class="notice"><i class="icon icon-important"><span class="visually-hidden">Warning</span></i><strong class="bold-small">You should provide evidence to support any changes as this will help us make a decision.</strong></div>'
+        },
+        {
+          'type': 'file',
+          'name': 'newFile',
+          'label': ''
+        }
+        ],
+        'continueText': 'Continue',
+        'continueDisabled': false,
+      }
+    })
+  })
+
+router.get('/check/supporting-documents-submit', function (req, res) {
+    if (req.query){
+      let formContents = req.query
+
+      req.session.data.dashboardData.clientProperties.find(property => property.laRef == req.session.data.laRef).uploadedFile = formContents
     }
-  }
+    res.redirect('/check/check-summary')
+    }
+  )
+
+  router.get('/check/check-summary', function (req, res) {
+    res.render('./check/check-summary.html',{
+      'property': properties.load(req)
+    })
+  })
+
+
 }
-
-$(document).on('submit', 'form', function (e) {
-  var requiredFieldsPresent = $(document).find('[data-required]').length > 0;
-
-  clearValidation();
-
-  if (requiredFieldsPresent) {
-    var errors = [];
-
-    checkTextFields(errors);
-    checkSelectors(errors);
-
-    if (errors.length > 0) {
-      e.preventDefault();
-      appendErrorSummary();
-      appendErrorMessages(errors);
-      $(document).scrollTop(0);
-    }
-
-  }
-});
